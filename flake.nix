@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     sbt = {
       url = "github:zaninime/sbt-derivation";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -25,16 +25,16 @@
         inherit pkgs;
 
         pname = "eldarica";
-        version = "2.2";
+        version = "2.2.1";
         src =
           pkgs.fetchFromGitHub
           {
             owner = "uuverifiers";
             repo = "eldarica";
             rev = "v${version}";
-            sha256 = "cQW1B5wTnlxEv9SczQXCIDQlxXl3Ixs68nUveyuXNYM=";
+            sha256 = "bBbwY/zBGPJQYR+UjTVZP/AHOFiIjG/lzXN7a3DIFcc=";
           };
-        depsSha256 = "PoyLJTAcyMSP9JptWTOS8Gvej0FJ9oZUvzabZ/YOQHc=";
+        depsSha256 = "RR52hrzxK2hv01HnGebTRNLml5Uc9XmX4ptLKb4T6/k=";
         nativeBuildInputs = [pkgs.makeWrapper];
         buildPhase = ''
           sbt assembly
