@@ -1,6 +1,7 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+    systems.url = "github:nix-systems/default";
     sbt = {
       url = "github:zaninime/sbt-derivation";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -10,31 +11,30 @@
   outputs = {
     self,
     nixpkgs,
+    systems,
     sbt,
   }: let
-    allSystems = ["x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin"];
-
     forAllSystems = f:
-      nixpkgs.lib.genAttrs allSystems (system:
+      nixpkgs.lib.genAttrs (import systems) (system:
         f {
           pkgs = import nixpkgs {inherit system;};
         });
   in {
-    packages = forAllSystems ({pkgs}: {
-      default = sbt.lib.mkSbtDerivation rec {
+    packages = forAllSystems ({pkgs}: rec {
+      eldarica = sbt.lib.mkSbtDerivation rec {
         inherit pkgs;
 
         pname = "eldarica";
-        version = "2.2.1";
+        version = "2.3pre";
         src =
           pkgs.fetchFromGitHub
           {
             owner = "uuverifiers";
             repo = "eldarica";
-            rev = "v${version}";
-            sha256 = "bBbwY/zBGPJQYR+UjTVZP/AHOFiIjG/lzXN7a3DIFcc=";
+            rev = "e901c969340418efec644e0da498ec496cfd2451";
+            sha256 = "s5z+2TUXsBNEw2f4cc7ogrAC1TBzAk8MwPLJ3zGz+BU=";
           };
-        depsSha256 = "RR52hrzxK2hv01HnGebTRNLml5Uc9XmX4ptLKb4T6/k=";
+        depsSha256 = "keGiNJx4gZeG6XDTdrBuOavJGg89O97AEh3yuRCver0=";
         nativeBuildInputs = [pkgs.makeWrapper];
         buildPhase = ''
           sbt assembly
@@ -55,8 +55,10 @@
           homepage = "https://github.com/uuverifiers/eldarica";
           license = licenses.bsd2;
           platforms = platforms.unix;
+          mainProgram = "eld";
         };
       };
+      default = eldarica;
     });
   };
 }
